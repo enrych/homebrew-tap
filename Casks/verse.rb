@@ -1,6 +1,6 @@
 cask "verse" do
-  version "0.3.0"
-  sha256 "d2057de96328b63760a66ac5646e6725f266337131d65d778a2217561e3645ee"
+  version "0.3.1"
+  sha256 "df9621834edb717e3fbe5bd8598909a2919eac70aa176e4e333a2925fd8a776c"
 
   url "https://github.com/enrych/verse/releases/download/v#{version}/Verse.dmg"
   name "Verse"
