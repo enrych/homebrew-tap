@@ -4,24 +4,22 @@ cask "verse" do
 
   url "https://github.com/enrych/verse/releases/download/v#{version}/Verse.dmg"
   name "Verse"
-  desc "Song lyrics on your Mac's lock screen, synced word by word"
-  homepage "https://verse-6gy.pages.dev"
+  desc "Song lyrics on your lock screen, synced word by word"
+  homepage "https://verse-6gy.pages.dev/"
 
   livecheck do
     url :url
     strategy :github_latest
   end
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "Verse.app"
 
   # Verse isn't notarised yet; clear the quarantine flag so it opens without
   # the right-click → Open step.
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/Verse.app"],
-                   sudo: false
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Verse.app"]
   end
 
   uninstall quit: "com.enrych.verse"
