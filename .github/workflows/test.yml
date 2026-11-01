@@ -1,0 +1,42 @@
+name: Test casks
+
+# Installs every cask through the real tap on a Mac, so a broken URL, checksum
+# or install step is caught before anyone runs `brew install`.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  install:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use this checkout as the enrych/tap tap
+        run: |
+          TAP="$(brew --repository)/Library/Taps/enrych/homebrew-tap"
+          mkdir -p "$(dirname "$TAP")"
+          ln -s "$GITHUB_WORKSPACE" "$TAP"
+
+      - name: Style
+        run: brew style --cask Casks/*.rb
+
+      - name: Install and check each cask
+        run: |
+          for f in Casks/*.rb; do
+            cask=$(basename "$f" .rb)
+            brew install --cask "enrych/tap/$cask"
+            brew list --cask "$cask"
+          done
+
+      - name: Verse opens without a quarantine prompt
+        run: |
+          test -d /Applications/Verse.app
+          if xattr -p com.apple.quarantine /Applications/Verse.app 2>/dev/null; then
+            echo "Quarantine flag still set"; exit 1
+          fi
+          echo "Verse installed, no quarantine flag"
+
+      - name: Uninstall cleanly
+        run: brew uninstall --cask --zap enrych/tap/verse
