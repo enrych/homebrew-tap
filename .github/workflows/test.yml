@@ -20,7 +20,7 @@ jobs:
           ln -s "$GITHUB_WORKSPACE" "$TAP"
 
       - name: Style
-        run: brew style --cask Casks/*.rb
+        run: brew style enrych/tap
 
       - name: Install and check each cask
         run: |
